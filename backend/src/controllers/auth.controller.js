@@ -75,10 +75,10 @@ export const login = async (req,res)=>{
             if (!match) return res.status(400).json({ message: "Invalid credentials" });
             generateToken(user._id, res);  
             return res.status(201).json({
-                _id: newUser._id,
-                fullName: newUser.fullName,
-                email: newUser.email,
-                profilePic: newUser.profilePic,
+                _id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                profilePic: user.profilePic,
             });
             } 
     } catch (error) {
@@ -91,5 +91,11 @@ export const login = async (req,res)=>{
 }
 
 export const logout = (req,res)=>{
-    res.send("Logout");
+    try{
+    res.cookie("jwt","", ({maxAge: 0}));
+    res.status(200).json({message: "Logged out successfully"});
+    } catch(error){
+        console.log("Error in controller", error.message);
+        res.status(500).json({message: "internal server error"});
+    }
 }
