@@ -1,4 +1,3 @@
-import { decode } from 'jsonwebtoken';
 import jwt from '../lib/utils.js';
 import User from '../models/user.model.js';
 
