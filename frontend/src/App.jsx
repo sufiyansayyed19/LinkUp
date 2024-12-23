@@ -1,18 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar.jsx';
+import HomePage from './pages/HomePage.jsx';
+import SignUpPage from './pages/SignupPage.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
 
-function App() {
-  // const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <>
-      <div>
-        This is a new Chat app 
-      </div>
-    </>
-  )
-}
+    <div>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/settigs" element={<SettingsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
 
-export default App
+      </Routes>
+    </div>
+  );
+}
+export default App;
