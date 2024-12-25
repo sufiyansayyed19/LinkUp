@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../../lib/axios.js";
 
+
 export const useAuthStore = create((set) => ({
     authUser: null,
     isSigningUp: false,
@@ -17,6 +18,21 @@ export const useAuthStore = create((set) => ({
             set({authUser: null});
         } finally {
             set({isCheckingAuth: false});
+        }
+    },
+
+    signUp: async (formData) => {
+        set({isSigningUp: true});
+        try {
+            const res = await axiosInstance.post("/auth/signup", formData);
+            set({authUser: res.data});
+
+        } catch (error) {
+            toast.error(error.response.data.message);
+            console.log("Error in signup", error);
+
+        } finally {
+            set({isSigningUp: false});
         }
     },
 }));
