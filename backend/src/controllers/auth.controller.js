@@ -4,7 +4,7 @@ import { generateToken } from '../lib/utils.js';
 import cloudinary from '../lib/cloudinary.js';
 
 export const signup = async (req, res) => {
-    // console.log(req.body);
+    console.log(req.body);
     const { fullName, email, password } = req.body;
 
     try {
@@ -93,7 +93,8 @@ export const login = async (req,res)=>{
 
 export const logout = (req,res)=>{
     try{
-    res.cookie("jwt","", ({maxAge: 0}));
+    res.cookie("jwt","", {maxAge: 0});
+    console.log("Logged out successfully");
     res.status(200).json({message: "Logged out successfully"});
     } catch(error){
         console.log("Error in controller", error.message);

@@ -1,10 +1,10 @@
-import { useAuthStore } from "./store/useAuthStore.js";
+import { useAuthStore } from "../store/useAuthStore.js";
 import { LogOut, MessageSquare,Settings, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 
 const Navbar = () => { // This is a functional component
-    const {authUser, logout} = useAuthStore(); // Import the useAuthStore hook
+    const {authUser,logout} = useAuthStore(); // Import the useAuthStore hook
 
     return  (
         <header
@@ -18,7 +18,7 @@ const Navbar = () => { // This is a functional component
                   <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                     <MessageSquare className="w-5 h-5 text-primary" />
                   </div>
-                  <h1 className="text-lg font-bold">Chatty</h1>
+                  <h1 className="text-lg font-bold">LinkUp</h1>
                 </Link>
               </div>
     
