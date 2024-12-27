@@ -10,7 +10,8 @@ dotenv.config();
 const app = express();
 
 //middleware handler
-app.use(express.json()); // parsing incoming json into js object for req.body
+app.use(express.json({ limit: "10mb" })); // Allows large payloads for Base64 images
+ // parsing incoming json into js object for req.body
 app.use(cookieParser()); // parsing cookie and making them accessible through req.cookies
 app.use(cors({ 
     origin: "http://localhost:5173",
