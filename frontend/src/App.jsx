@@ -9,6 +9,7 @@ import { useAuthStore } from './store/useAuthStore.js';
 import { useEffect } from 'react';
 import { Loader } from "lucide-react";
 import { Toaster } from 'react-hot-toast';
+import { useThemeStore } from './store/useThemeStore.js';
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -17,6 +18,8 @@ const App = () => {
   }, [checkAuth]);
  console.log({authUser});
 
+const {theme} = useThemeStore();
+
 if (isCheckingAuth && !authUser ) return (
   <div className='flex justify-center items-center h-screen'> 
     <Loader className="size-10 animate-spin"/>
@@ -24,7 +27,7 @@ if (isCheckingAuth && !authUser ) return (
   );
 
   return (
-    <div>
+    <div data-theme={theme} >
       
       <Navbar />
       <Routes>
