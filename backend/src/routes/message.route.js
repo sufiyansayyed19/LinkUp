@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/users", protectRoute, getUsersForSidebar);
 
 // getting message history of a user
-router.get("/id:", protectRoute, getMessages);
+router.get("/:id", protectRoute, getMessages);
 
 // sending message route
 router.post("/send/:id", protectRoute, sendMessage);

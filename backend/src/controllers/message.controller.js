@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
-
+import cloudinary from "../lib/cloudinary.js";
 //getting users of sidebar
 export const getUsersForSidebar = async (req, res) => {
     
@@ -39,27 +39,43 @@ export const getMessages = async (req, res) =>{
 
 // sending message route
 export const sendMessage = async (req, res) => {
-    try{
-        const {id: receiverId} = req.params;
-        const {text, image} = req.body;
+    try {
+        const { id: receiverId } = req.params;
+        const { text, image } = req.body;
         const senderId = req.user._id;
-        let imageUrl = "";
-        if (image){ 
-            const uploadResponse = await cloudinary.uploader.upload(image);
-            imageUrl = uploadResponse.secure_url;
+
+        if (!receiverId || (!text && !image)) {
+            return res.status(400).json({ error: "Receiver ID and either text or image are required." });
         }
+
+        let imageUrl = "";
+        if (image) {
+            try {
+                const uploadResponse = await cloudinary.uploader.upload(image, {
+                    folder: "messages", // Optional: Organize in a folder
+                    resource_type: "auto", // Handle images, videos, etc.
+                });
+                imageUrl = uploadResponse.secure_url;
+            } catch (uploadError) {
+                console.error("Cloudinary upload error: ", uploadError.message);
+                return res.status(500).json({ error: "Image upload failed." });
+            }
+        }
+
         const newMessage = new Message({
             senderId,
             receiverId,
             text,
-            image: imageUrl
+            image: imageUrl,
         });
+
         await newMessage.save();
 
-        // to do: realtime functionality goes here => socket.io
+        // TODO: Implement realtime functionality with socket.io or another library
         res.status(201).json(newMessage);
-    } catch(error){
+    } catch (error) {
         console.error("Error in controller sendMessage: ", error.message);
-        res.status(500).json({error: "Internal server error"});
+        res.status(500).json({ error: "Internal server error" });
     }
-}   
+};
+   
