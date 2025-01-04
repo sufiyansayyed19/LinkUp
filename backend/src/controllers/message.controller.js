@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 import cloudinary from "../lib/cloudinary.js";
 //getting users of sidebar
 export const getUsersForSidebar = async (req, res) => {
-    
     try {
         const loggedInUserId = req.user._id;
         const filterdUsers = await User.find({_id:{$ne: loggedInUserId}}).select("-passwrod");
@@ -71,7 +71,12 @@ export const sendMessage = async (req, res) => {
 
         await newMessage.save();
 
-        // TODO: Implement realtime functionality with socket.io or another library
+        // TO DO: getting message receiver's socket id and sending message to that socket
+        // completed
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }    
         res.status(201).json(newMessage);
     } catch (error) {
         console.error("Error in controller sendMessage: ", error.message);
