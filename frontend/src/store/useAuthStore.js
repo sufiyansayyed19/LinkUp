@@ -1,20 +1,24 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
 
+const baseURL = "http://localhost:5001";
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
     authUser: null,
     isSigningUp: false,
     isLogingIn: false,
     isUpdatingProfile : false,
     isCheckingAuth: true,
     onlineUsers: [],
+    socket: null,
 
     checkAuth: async () => {
         try {
             const res = await axiosInstance.get("/auth/check"); // url is http://localhost:5173/api/auth/check
             set({authUser: res.data});
+            get().connectSocket();
         } catch (error) {
             console.log("Error in checkAuth", error);
             set({authUser: null});
@@ -29,7 +33,7 @@ export const useAuthStore = create((set) => ({
             const res = await axiosInstance.post("/auth/signup", formData);
             set({authUser: res.data});
             toast.success("Signed up successfully");
-
+            get().connectSocket();
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
             console.log("Error in signup", error);
@@ -49,6 +53,7 @@ export const useAuthStore = create((set) => ({
                 isUpdatingProfile: false,
             });
             toast.success("Logged out successfully");
+            get().disconnectSocket();
         } catch (error) {
             console.log("Error in logout", error);
             toast.error(error.response?.data?.message || "Error logging out");
@@ -61,6 +66,7 @@ export const useAuthStore = create((set) => ({
             const res = await axiosInstance.post("/auth/login", formData);
             set({authUser: res.data});
             toast.success("Logged in successfully");
+            get().connectSocket();
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
             console.log("Error in login", error);
@@ -82,5 +88,26 @@ export const useAuthStore = create((set) => ({
         } finally {
             set({isUpdatingProfile: false});
         }
-    }
+    },
+
+    connectSocket: () => {
+        const {authUser} = get();
+        if (!authUser || get().socket?.connected) return;
+
+        const socket = io(baseURL,{
+            query: {
+                userId: authUser._id,
+            },
+        });
+        socket.connect();
+        set({socket: socket});
+        socket.on("getOnlineUsers", (userIds) => {
+            set({onlineUsers: userIds});
+        });
+    },
+
+    disconnectSocket: () => {
+       if (get().socket?.connected) {get().socket.disconnect();}
+    },
+
 }));
