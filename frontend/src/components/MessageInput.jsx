@@ -8,7 +8,7 @@ const MessageInput = () => {
     const [text, setText] =useState("");
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
-    const { sendMessage } = useChatStore();
+    const { sendMessage ,setIsMessageImage} = useChatStore();
 
     const handleImageChange = async(e) => {
         const file = e.target.files[0];
@@ -16,6 +16,7 @@ const MessageInput = () => {
             toast.error("No file selected");
             return;
         } 
+        setIsMessageImage(true);
         const reader = new FileReader(); // creates instance of FileReader
         reader.readAsDataURL(file); // reads the file and convertes it to base64
         reader.onload = () => setImagePreview(reader.result); // sets the base64 result to imagePreview
@@ -68,6 +69,7 @@ const MessageInput = () => {
             </button>
           </div>
         </div>
+        
       )}
 
       <form onSubmit={handleSendMessage} className="flex items-center gap-2">

@@ -1,14 +1,18 @@
 import { useEffect } from "react";
+import { useRef } from "react";
 import { useChatStore } from "../store/useChatStrore";
 import { useAuthStore } from "../store/useAuthStore";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { formatMessageTime } from "../lib/utils";
+import { handleAutoScroll } from "./handleAutoScroll";
+
 
 const ChatContainer = () => {
-    const {messages, getMessages, isMessageLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages} = useChatStore();
+    const {messages, getMessages, isMessageLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages, isMessageImage, setIsMessageImage} = useChatStore();
     const {authUser} = useAuthStore();
+    const messageEndRef = useRef(null);
 
     useEffect(() => {
         getMessages(selectedUser?._id); // Fetches messages for the selected user.
@@ -19,6 +23,14 @@ const ChatContainer = () => {
         };
     }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
 
+    useEffect(() => {
+        const timeoutId = handleAutoScroll(isMessageImage, messageEndRef);
+        return () =>{
+            clearTimeout(timeoutId);
+            setIsMessageImage(false);
+        }
+    }, [messages]);
+    
     if (isMessageLoading) {
         return (
             <div className="flex-1 flex flex-col overflow-auto">
@@ -37,7 +49,7 @@ const ChatContainer = () => {
                 <div
                     key={message._id}
                     className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
-                    // ref={messageEndRef}
+                    ref={messageEndRef}
                 >
                     <div className=" chat-image avatar">
                     <div className="size-10 rounded-full border">

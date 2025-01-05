@@ -9,6 +9,8 @@ export const useChatStore = create((set,get) => ({
     selectedUser: null,
     isUserLoading: false,
     isMessageLoading: false,
+    isMessageImage: false,
+
     
     getUsers: async () => {
         set({isUserLoading: true});
@@ -48,6 +50,7 @@ export const useChatStore = create((set,get) => ({
         }
     },
 
+
 // to do: optimize for real-time updates
 
     subscribeToMessages: () => {
@@ -57,6 +60,8 @@ export const useChatStore = create((set,get) => ({
         const socket = useAuthStore.getState().socket;
 
         socket.on("newMessage", (newMessage) => {
+            const isMessageFromSelectedUser = newMessage.senderId === selectedUser._id;
+            if (!isMessageFromSelectedUser) return;
             set((state) => ({messages: [...state.messages, newMessage]}));
         });
     },
@@ -68,6 +73,7 @@ export const useChatStore = create((set,get) => ({
 
     setSelectedUser: (user) => set({selectedUser: user}),
 
+    setIsMessageImage: (value) => set({isMessageImage: value}),
 }));
 
 
