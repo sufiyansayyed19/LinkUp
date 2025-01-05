@@ -1,1 +1,2 @@
 image input for small screen
+image scroll delay for sender and reciever
