@@ -11,6 +11,7 @@ import path from 'path';
 
 
 dotenv.config();
+console.log("MongoURI: ", process.env.MONGO_URI); // Add this line to verify
 //middleware handler
 app.use(express.json({ limit: "10mb" })); // Allows large payloads for Base64 images
  // parsing incoming json into js object for req.body
@@ -29,10 +30,10 @@ const __dirname = path.resolve();
 
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '/frontend/build')));
+    app.use(express.static(path.join(__dirname, '/frontend/dist')));
 
     app.get('*', (req, res) =>
-        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+        res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'))
     );
 }
 

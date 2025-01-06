@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="85" height="85" viewBox="0 0 48 48" fill="none">
+  <!-- Rounded background -->
+  <rect x="4" y="4" width="40" height="40" rx="8" fill="#1a1a1a" />
+  
+  <!-- Speech bubble shifted further to the right -->
+  <path d="M29 17a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H20l-4 4V19a2 2 0 0 1 2-2h11z" 
+        fill="#1a1a1a" stroke="#3f7ae0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
